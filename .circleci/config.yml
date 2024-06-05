@@ -10,12 +10,21 @@ jobs:
       - run: go mod download
       - run: go test ./...
       - run: go build -o server .
+  
+  test:
+    docker:
+      - image: circleci/golang:1.16
+
+    steps:
+      - checkout
+      - run: go test
 
 workflows:
   version: 2
   build:
     jobs:
       - build
+      - test
 
 #  version: 2.1
 #  jobs:
