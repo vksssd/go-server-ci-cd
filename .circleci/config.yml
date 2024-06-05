@@ -29,12 +29,19 @@
 
 version: 2.1
 
-jobs:
-  build:
+executors:
+  docker-executor:
     docker:
       - image: circleci/golang:1.16
     working_directory: /go/src/github.com/<your_username>/go-server-ci-cd
+
+jobs:
+  build:
+    executor: docker-executor
     steps:
+      - setup_remote_docker:
+          version: 20.10.7
+          docker_layer_caching: true
       - checkout
       - run: go mod download
       - run: go test ./...
@@ -45,11 +52,9 @@ jobs:
             echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
             docker build -t vksssd/go-server-ci-cd .
             docker push vksssd/go-server-ci-cd
-    
-  test:
-    docker:
-      - image: circleci/golang:1.16
 
+  test:
+    executor: docker-executor
     steps:
       - checkout
       - run: go test
@@ -59,4 +64,3 @@ workflows:
   build:
     jobs:
       - build
-      - test
