@@ -45,6 +45,14 @@ jobs:
             echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
             docker build -t <your_dockerhub_username>/go-server-ci-cd .
             docker push <your_dockerhub_username>/go-server-ci-cd
+    
+  test:
+    docker:
+      - image: circleci/golang:1.16
+
+    steps:
+      - checkout
+      - run: go test
 
 workflows:
   version: 2
