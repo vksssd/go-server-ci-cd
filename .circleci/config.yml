@@ -27,13 +27,53 @@
 #       - build
 
 
+# version: 2.1
+
+# executors:
+#   docker-executor:
+#     docker:
+#       - image: circleci/golang:1.16
+#     working_directory: /go/src/github.com/vksssd/go-server-ci-cd
+
+# jobs:
+#   build:
+#     executor: docker-executor
+#     steps:
+#       - setup_remote_docker:
+#           version: 20.10.7
+#           docker_layer_caching: true
+#       - checkout
+#       - run: go mod download
+#       - run: go test ./...
+#       - run: go build -o server .
+#       - run:
+#           name: Build and push Docker image
+#           command: |
+#             echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+#             docker build -t vksssd/go-server-ci-cd .
+#             docker push vksssd/go-server-ci-cd
+
+#   test:
+#     executor: docker-executor
+#     steps:
+#       - checkout
+#       - run: go test
+
+# workflows:
+#   version: 2
+#   build:
+#     jobs:
+#       - build
+#       - test
+
+
 version: 2.1
 
 executors:
   docker-executor:
     docker:
       - image: circleci/golang:1.16
-    working_directory: /go/src/github.com/<your_username>/go-server-ci-cd
+    working_directory: /go/src/github.com/vksssd/go-server-ci-cd
 
 jobs:
   build:
@@ -49,15 +89,20 @@ jobs:
       - run:
           name: Build and push Docker image
           command: |
+            TAG=$(echo $CIRCLE_SHA1 | cut -c1-7)
             echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-            docker build -t vksssd/go-server-ci-cd .
-            docker push vksssd/go-server-ci-cd
+            docker build -t vksssd/go-server-ci-cd:$TAG .
+            docker push vksssd/go-server-ci-cd:$TAG
+            docker tag vksssd/go-server-ci-cd:$TAG vksssd/go-server-ci-cd:latest
+            docker push vksssd/go-server-ci-cd:latest
+
 
   test:
     executor: docker-executor
     steps:
       - checkout
       - run: go test
+
 
 workflows:
   version: 2

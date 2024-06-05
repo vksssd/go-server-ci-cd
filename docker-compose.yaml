@@ -1,0 +1,24 @@
+# version: '3.8'
+
+# services:
+#   web:
+#     image: vksssd/go-server-ci-cd:latest
+#     ports:
+#       - "8080:8080"
+#     platform: linux/amd64
+
+
+version: '3.8'
+
+services:
+  web:
+    image: vksssd/go-server-ci-cd:latest
+    ports:
+      - "8080:8080"
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_POLL_INTERVAL=300  # Check for updates every 5 minutes
