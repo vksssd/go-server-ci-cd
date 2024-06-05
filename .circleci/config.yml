@@ -43,8 +43,8 @@ jobs:
           name: Build and push Docker image
           command: |
             echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-            docker build -t <your_dockerhub_username>/go-server-ci-cd .
-            docker push <your_dockerhub_username>/go-server-ci-cd
+            docker build -t vksssd/go-server-ci-cd .
+            docker push vksssd/go-server-ci-cd
     
   test:
     docker:
