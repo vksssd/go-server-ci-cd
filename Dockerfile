@@ -29,6 +29,8 @@
 # CMD ["./server"]
 
 
+
+# this one is working well enough
 # Dockerfile
 # Stage 1: Build the Go application
 FROM golang:1.16 AS builder
